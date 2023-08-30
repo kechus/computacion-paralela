@@ -10,10 +10,13 @@ class Consumer implements Runnable {
     @Override
     public void run() {
         try {
-            while (!buffer.isEmpty()) {
+            while (true) {
                 var value = buffer.take();
                 System.out.println("Thread "+Thread.currentThread().getName()+" Consumed: " + value);
                 Thread.sleep(200);
+                if(buffer.isEmpty()){
+                    System.out.print("==========");
+                }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

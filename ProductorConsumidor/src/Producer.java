@@ -1,20 +1,26 @@
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 class Producer implements Runnable {
     private final BlockingQueue<Integer> buffer;
-    private final int itemsToProduce;
+    private final Random random;
 
-    public Producer(BlockingQueue<Integer> buffer,int itemsToProduce) {
+    public Producer(BlockingQueue<Integer> buffer) {
         this.buffer = buffer;
-        this.itemsToProduce = itemsToProduce;
+        random = new Random();
     }
 
     @Override
     public void run() {
         try {
-            for (int i = 0; i < itemsToProduce; i++) {
-                buffer.put(i);
-                System.out.println("Produced: " + i);
+            while (true) {
+                Tarea.itemsToProduce = random.nextInt(10, 30);
+                System.out.println("\n Going to produce "+Tarea.itemsToProduce);
+                for (int i = 0; i < Tarea.itemsToProduce; i++) {
+                    buffer.put(i);
+                    System.out.println("Produced: " + i);
+                }
+                Thread.sleep(5000);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
