@@ -11,7 +11,7 @@ public class Circulo implements Runnable{
     public void run() {
         try {
             while (true){
-                Window.circulos[pos] += 10;
+                Window.circles[pos] += 10;
                 frame.repaint();
                 Thread.sleep(1000);
             }

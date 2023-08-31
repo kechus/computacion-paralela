@@ -11,7 +11,7 @@ public class Cuadrado implements Runnable{
     public void run() {
         try {
             while (true){
-                Window.cuadrados[pos] += 20;
+                Window.squares[pos] += 20;
                 frame.repaint();
                 Thread.sleep(1000);
             }
