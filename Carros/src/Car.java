@@ -1,11 +1,8 @@
-import javax.swing.*;
-import java.util.concurrent.BlockingQueue;
-
-public class Circulo implements Runnable{
+public class Car implements Runnable{
     int pos;
     boolean goesRight;
 
-    Circulo(int pos,boolean goesRight){
+    Car(int pos, boolean goesRight){
        this.pos = pos;
        this.goesRight = goesRight;
     }

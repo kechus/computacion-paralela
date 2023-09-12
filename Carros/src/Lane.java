@@ -2,44 +2,42 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 public class Lane implements Runnable {
-    private final BlockingQueue<Circulo> buffer;
+    private final BlockingQueue<Car> buffer;
 
     private final boolean goesRight;
 
-    public Lane(BlockingQueue<Circulo> buffer, boolean goesRight) {
+    public Lane(BlockingQueue<Car> buffer, boolean goesRight) {
         this.buffer = buffer;
         this.goesRight = goesRight;
+    }
+    private boolean shouldProduceCar(int chance) {
+        return new Random().nextInt(0, 100) > chance;
+    }
+
+    private void createAndAddCar() throws InterruptedException {
+        System.out.println("Creating a new car to the " + (goesRight ? "right" : "left"));
+        int initialX = goesRight ? 10 : 600;
+        var car = new Car(initialX, goesRight);
+        var thread = new Thread(car);
+        thread.start();
+        buffer.put(car);
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                var produced = new Random().nextInt(0, 100) > 60;
-//                System.out.println("hola desde " + (goesRight ? "derecha" : "izquierda"));
-
-                if (produced) {
+                if (shouldProduceCar(60)) {
                     Main.laneSemaphore.acquire();
-                    System.out.println("creando primer circulo a la " + (goesRight ? "derecha" : "izquierda"));
-                    var circl = new Circulo((goesRight) ? 10 : 600, goesRight);
-                    var t = new Thread(circl);
-                    t.start();
-                    buffer.put(circl);
-
+                    createAndAddCar();
                     while (!buffer.isEmpty()) {
-                        System.out.println("novacio");
-                        var prod = new Random().nextInt(0, 100) > 80;
-                        if (prod) {
-                            System.out.println("creando nuevo circulo a la " + (goesRight ? "derecha" : "izquierda"));
-                            var circle = new Circulo((goesRight) ? 10 : 600, goesRight);
-                            var th = new Thread(circle);
-                            th.start();
-                            buffer.put(circle);
+                        if (shouldProduceCar(80)) {
+                            createAndAddCar();
                         }
                         Thread.sleep(1000);
                     }
+                    Main.laneSemaphore.release();
                 }
-
                 Thread.sleep(2000);
             }
         } catch (InterruptedException e) {
