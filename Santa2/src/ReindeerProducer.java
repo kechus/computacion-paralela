@@ -18,15 +18,15 @@ public class ReindeerProducer extends Thread {
                 Main.drawSemaphore.acquire();
                 Main.window.repaint();
                 Main.drawSemaphore.release();
-                Thread.sleep(2500);
+                Thread.sleep(1800);
                 if (currentReindeer == 9) {
-                    SantaStatus estatus;
+                    SantaStatus status;
                     do {
                         Main.santaSemaphore.acquire();
-                        estatus = Main.santa.status;
+                        status = Main.santa.status;
                         Main.santaSemaphore.release();
-                        Thread.sleep(1000);
-                    } while (Objects.equals(estatus, SantaStatus.REINDEERS));
+                        Thread.sleep(750);
+                    } while (Objects.equals(status, SantaStatus.REINDEERS));
                     currentReindeer = 0;
                 }
             } catch (Exception e) {

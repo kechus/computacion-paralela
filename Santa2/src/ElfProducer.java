@@ -9,7 +9,7 @@ public class ElfProducer extends Thread{
                 Main.window.freeElfs.add(elf);
                 elf.start();
                 Main.elfsSemaphore.release();
-                Thread.sleep(1500);
+                Thread.sleep(1300);
             }catch(Exception e){
                 System.out.println("Error " + e.getMessage());
             }

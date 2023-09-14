@@ -11,6 +11,7 @@ public class Santa extends Thread {
     SantaStatus status = SantaStatus.SLEEPING;
     ElfGrouping elfGrouping;
 
+
     @Override
     public void run() {
         while (true) {
@@ -73,7 +74,7 @@ public class Santa extends Thread {
                 Main.window.repaint();
                 Main.drawSemaphore.release();
                 Main.santaSemaphore.release();
-                Thread.sleep(1000);
+                Thread.sleep(750);
             } catch (Exception e) {
                 e.printStackTrace();
             }

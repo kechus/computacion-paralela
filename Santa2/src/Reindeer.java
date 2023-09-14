@@ -18,7 +18,7 @@ public class Reindeer extends Thread{
                 Main.drawSemaphore.acquire();
                 Main.window.repaint();
                 Main.drawSemaphore.release();
-                Thread.sleep(300);
+                Thread.sleep(220);
             }
             Main.reindeersSemaphore.acquire();
             Main.window.reindeers.remove(this);
