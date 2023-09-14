@@ -1,86 +1,72 @@
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.Semaphore;
 
 public class Santa extends Thread {
     String status = "Durmiendo";
-    Window window;
-    AgrupacionElfos agrupacionElfos;
-    Semaphore semaforoInterfaz;
-    Semaphore semaforoAgrupacionElfos;
-    Semaphore semaforoSanta;
-    Semaphore semaforoRenos;
-
-    Santa(Window window, Semaphore semaforoInterfaz, Semaphore semaforoAgrupacionElfos, Semaphore semaforoSanta, Semaphore semaforoRenos) {
-        this.window = window;
-        this.semaforoInterfaz = semaforoInterfaz;
-        this.semaforoAgrupacionElfos = semaforoAgrupacionElfos;
-        this.semaforoSanta = semaforoSanta;
-        this.semaforoRenos = semaforoRenos;
-    }
+    ElfGrouping elfGrouping;
 
     @Override
     public void run() {
         while (true) {
             try {
                 boolean renosStart = false;
-                semaforoSanta.acquire();
+               Main.santaSemaphore.acquire();
                 if (Objects.equals(status, "Durmiendo")) {
                     boolean changed = false;
-                    semaforoRenos.acquire();
-                    if(window.reindeers.size() == 9){
+                    Main.reindeersSemaphore.acquire();
+                    if(Main.window.reindeers.size() == 9){
                         status = "Renos";
                         changed = true;
                         renosStart = true;
                     }
-                    semaforoRenos.release();
-                    semaforoAgrupacionElfos.acquire();
-                    if (!window.gropuedElfs.isEmpty() && !changed) {
-                        agrupacionElfos = window.gropuedElfs.get(0);
+                    Main.reindeersSemaphore.release();
+                    Main.elfsGroupingSemaphore.acquire();
+                    if (!Main.window.groupedElfs.isEmpty() && !changed) {
+                        elfGrouping = Main.window.groupedElfs.get(0);
                         status = "Ayudando";
                     }
-                    semaforoAgrupacionElfos.release();
+                    Main.elfsGroupingSemaphore.release();
                 }
                 if (Objects.equals(status, "Ayudando")) {
                     boolean changed = false;
-                    semaforoRenos.acquire();
-                    if(window.reindeers.size() == 9){
+                    Main.reindeersSemaphore.acquire();
+                    if(Main.window.reindeers.size() == 9){
                         status = "Renos";
                         changed = true;
                         renosStart = true;
                     }
-                    semaforoRenos.release();
-                    if (agrupacionElfos.stage < 3 && !changed) {
-                        agrupacionElfos.stage++;
+                    Main.reindeersSemaphore.release();
+                    if (elfGrouping.stage < 3 && !changed) {
+                        elfGrouping.stage++;
                     }
-                    if (agrupacionElfos.stage == 3 && !changed) {
-                        semaforoAgrupacionElfos.acquire();
-                        window.gropuedElfs.remove(agrupacionElfos);
-                        status = (!window.gropuedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
-                        agrupacionElfos = (status.equals("Ayudando")) ? window.gropuedElfs.get(0) : null;
-                        semaforoAgrupacionElfos.release();
+                    if (elfGrouping.stage == 3 && !changed) {
+                        Main.elfsGroupingSemaphore.acquire();
+                        Main.window.groupedElfs.remove(elfGrouping);
+                        status = (!Main.window.groupedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
+                        elfGrouping = (status.equals("Ayudando")) ? Main.window.groupedElfs.get(0) : null;
+                        Main.elfsGroupingSemaphore.release();
                     }
                 }
                 if(Objects.equals(status, "Renos")){
-                    semaforoRenos.acquire();
-                    ArrayList<Reindeer> reindeers = window.reindeers;
-                    semaforoRenos.release();
+                    Main.reindeersSemaphore.acquire();
+                    ArrayList<Reindeer> reindeers = Main.window.reindeers;
+                    Main.reindeersSemaphore.release();
                     if(renosStart){
                         for(var r : reindeers){
                             r.start();
                         }
                     }
                     if(reindeers.isEmpty()){
-                        semaforoAgrupacionElfos.acquire();
-                        status = (!window.gropuedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
-                        if(agrupacionElfos == null) agrupacionElfos = window.gropuedElfs.get(0);
-                        semaforoAgrupacionElfos.release();
+                        Main.elfsGroupingSemaphore.acquire();
+                        status = (!Main.window.groupedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
+                        if(elfGrouping == null) elfGrouping = Main.window.groupedElfs.get(0);
+                        Main.elfsGroupingSemaphore.release();
                     }
                 }
-                semaforoInterfaz.acquire();
-                window.repaint();
-                semaforoInterfaz.release();
-                semaforoSanta.release();
+                Main.drawSemaphore.acquire();
+                Main.window.repaint();
+                Main.drawSemaphore.release();
+                Main.santaSemaphore.release();
                 Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -19,8 +19,8 @@ public class Reindeer extends Thread{
     @Override
     public void run() {
         try {
-            while (y >= 0) {
-                y -= 20;
+            while (x >= 0) {
+                x -= 20;
                 semaforoInterfaz.acquire();
                 window.repaint();
                 semaforoInterfaz.release();

@@ -10,9 +10,9 @@ public class Window extends JFrame {
     BufferedImage santaImg;
     BufferedImage elfImg;
     BufferedImage reindeerImg;
-    BufferedImage groupdedElfs;
+    BufferedImage groupdedElfsImg;
     ArrayList<Elf> freeElfs;
-    ArrayList<AgrupacionElfos> gropuedElfs;
+    ArrayList<ElfGrouping> groupedElfs;
     ElfsProducer elfsProducer;
     ReindeersProducer reindeersProducer;
     Santa santa;
@@ -20,17 +20,17 @@ public class Window extends JFrame {
     ArrayList<Reindeer> reindeers;
 
     Window() {
-        var baseUrl = "src/assets/";
+        var baseUrl = "src/images/";
         try {
             this.reindeers = new ArrayList<>();
             this.santaImg = ImageIO.read(new File(baseUrl + "santa.png"));
             this.elfImg = ImageIO.read(new File(baseUrl + "elf.png"));
             this.reindeerImg = ImageIO.read(new File(baseUrl + "reindeer.png"));
-            this.groupdedElfs = ImageIO.read(new File(baseUrl+"agrupacionElfos.png"));
-            this.gropuedElfs = new ArrayList<>();
+            this.groupdedElfsImg = ImageIO.read(new File(baseUrl+"agrupacionElfos.png"));
+            this.groupedElfs = new ArrayList<>();
             this.freeElfs = new ArrayList<>();
             setSize(800, 800);
-            setDefaultCloseOperation(3);
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,10 +51,10 @@ public class Window extends JFrame {
             }
         }
 
-        for (int i = 0; i < gropuedElfs.size(); i++) {
-            g.drawImage(groupdedElfs, elfImg.getWidth() + 40, 50 + i * (groupdedElfs.getHeight() + 10), this);
-            if (Objects.equals(santa.status, "Ayudando") && santa.agrupacionElfos == gropuedElfs.get(i)) {
-                g.drawImage(santaImg, elfImg.getWidth() + groupdedElfs.getWidth() + 60, 50 + i * (groupdedElfs.getHeight() + 10), this);
+        for (int i = 0; i < groupedElfs.size(); i++) {
+            g.drawImage(groupdedElfsImg, elfImg.getWidth() + 40, 50 + i * (groupdedElfsImg.getHeight() + 10), this);
+            if (Objects.equals(santa.status, "Ayudando") && santa.elfGrouping == groupedElfs.get(i)) {
+                g.drawImage(santaImg, elfImg.getWidth() + groupdedElfsImg.getWidth() + 60, 50 + i * (groupdedElfsImg.getHeight() + 10), this);
             }
         }
 
