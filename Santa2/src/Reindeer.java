@@ -1,13 +1,11 @@
-import java.util.concurrent.Semaphore;
-
 public class Reindeer extends Thread{
     int x;
     int y;
-    int heigth;
+    int height;
     Reindeer(int x, int y){
         this.x = x;
         this.y = y;
-        this.heigth = Main.window.getHeight();
+        this.height = Main.window.getHeight();
     }
 
     @Override

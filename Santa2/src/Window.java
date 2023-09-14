@@ -25,7 +25,7 @@ public class Window extends JFrame {
             this.santaImg = ImageIO.read(new File(baseUrl + "santa.png"));
             this.elfImg = ImageIO.read(new File(baseUrl + "elf.png"));
             this.reindeerImg = ImageIO.read(new File(baseUrl + "reindeer.png"));
-            this.groupedElfsImg = ImageIO.read(new File(baseUrl+"agrupacionElfos.png"));
+            this.groupedElfsImg = ImageIO.read(new File(baseUrl+"elfGroup.png"));
             this.groupedElfs = new ArrayList<>();
             this.freeElfs = new ArrayList<>();
             setSize(800, 800);
