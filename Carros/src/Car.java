@@ -9,7 +9,7 @@ public class Car implements Runnable{
     @Override
     public void run() {
         var speed = 10;
-        var rate = 100;
+        var rate = 200;
         try {
             while (true){
                 if(goesRight){
@@ -17,14 +17,10 @@ public class Car implements Runnable{
                 }else{
                     pos -= speed;
                 }
-
                 Main.drawSemaphore.acquire();
                 Main.window.repaint();
                 Main.drawSemaphore.release();
-
                 Thread.sleep(rate);
-
-
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

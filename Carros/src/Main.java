@@ -14,10 +14,16 @@ public class Main {
         leftQueue = new ArrayBlockingQueue<>(10);
         drawSemaphore = new Semaphore(1, true);
         laneSemaphore = new Semaphore(1);
+
+        window = new Window();
         var lane = new Thread( new Lane(Main.rightQueue,true) );
         var lane2 = new Thread( new Lane(Main.leftQueue,false) );
+        var leftProducer = new CarProducer( Main.leftQueue,false );
+        var rightProducer = new CarProducer( Main.rightQueue,true );
+
         lane.start();
         lane2.start();
-        window = new Window();
+        leftProducer.start();
+        rightProducer.start();
     }
 }

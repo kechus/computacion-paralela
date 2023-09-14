@@ -31,8 +31,10 @@ public class Window extends JFrame {
         g2d.drawRect(100,100,600,10);
         g2d.drawRect(100,500,600,10);
 
+
+        g2d.drawString("Carros hacia derecha:"+Main.rightQueue.size(),50,50);
         for(var a : Main.rightQueue){
-           g2d.drawImage(rightCarImage,a.pos,300,this);
+           g2d.drawImage(rightCarImage,a.pos,200,this);
             if(a.pos >= 700){
                 try {
                     Main.rightQueue.take();
@@ -42,6 +44,7 @@ public class Window extends JFrame {
             }
         }
 
+        g2d.drawString("Carros hacia izquierda:"+Main.leftQueue.size(),300,50);
         for(var a : Main.leftQueue){
             g2d.drawImage(leftCarImage,a.pos,300,this);
             if(a.pos <= 100){
