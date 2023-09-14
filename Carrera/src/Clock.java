@@ -1,28 +1,28 @@
+import javax.swing.*;
+
 public class Clock implements Runnable {
-    private Window window;
-    Clock(Window w){
-        window = w;
+    private JLabel label;
+    private int speed;
+
+    Clock(JLabel l, int s) {
+        label = l;
+        speed = s;
     }
 
     @Override
     public void run() {
-        var minutes = 0;
-        var seconds = 0;
-        String minutesString = "";
-        String secondsString = "";
-        for (minutes = 0; minutes < 2; minutes++) {
-             minutesString = String.valueOf(minutes).length() == 1 ? "0"+minutes : String.valueOf(minutes);
-            for (seconds = 0; seconds < 60; seconds++) {
-                 secondsString = String.valueOf(seconds).length() == 1 ? "0"+seconds : String.valueOf(seconds);
-                var timeString = "00:"+minutesString + ":" + secondsString;
-                window.updateTimeString(timeString);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        boolean moving = true;
+        while(moving){
+            var size = label.getPreferredSize();
+            label.setBounds(label.getX() + speed, label.getY(), size.width, size.height);
+            if(label.getX() >= 900){
+                moving = false;
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
-        window.updateTimeString("00:02:00");
-   }
+    }
 }

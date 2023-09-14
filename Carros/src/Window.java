@@ -12,10 +12,6 @@ public class Window extends JFrame {
        setSize(800, 600);
        setVisible(true);
        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       var lane = new Thread( new Lane(Main.rightQueue,true) );
-       var lane2 = new Thread( new Lane(Main.leftQueue,false) );
-       lane.start();
-       lane2.start();
 
        try {
            rightCarImage = ImageIO.read(new File("src/images/car_right.png"));

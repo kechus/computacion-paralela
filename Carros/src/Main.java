@@ -14,6 +14,10 @@ public class Main {
         leftQueue = new ArrayBlockingQueue<>(10);
         drawSemaphore = new Semaphore(1, true);
         laneSemaphore = new Semaphore(1);
+        var lane = new Thread( new Lane(Main.rightQueue,true) );
+        var lane2 = new Thread( new Lane(Main.leftQueue,false) );
+        lane.start();
+        lane2.start();
         window = new Window();
     }
 }

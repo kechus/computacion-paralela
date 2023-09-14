@@ -28,8 +28,8 @@ public class Lane implements Runnable {
         try {
             while (true) {
                 if (shouldProduceCar(60)) {
-                    Main.laneSemaphore.acquire();
                     createAndAddCar();
+                    Main.laneSemaphore.acquire();
                     while (!buffer.isEmpty()) {
                         if (shouldProduceCar(80)) {
                             createAndAddCar();
