@@ -13,13 +13,15 @@ public class ReindeersProducer extends Thread {
                 var length = Main.reindeers.size() + 1;
                 if (length == 10) {
                     repaint();
+                    for(var reindeer : Main.reindeers){
+                        reindeer.start();
+                    }
                 } else {
                     var reindeer = new Reindeer(500, 50 * length);
-                    reindeer.start();
                     Main.reindeers.add(reindeer);
-                    Main.reindeersSemaphore.release();
                     repaint();
                 }
+                Main.reindeersSemaphore.release();
                 Thread.sleep(500);
             }
         } catch (InterruptedException e) {

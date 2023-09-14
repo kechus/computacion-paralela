@@ -14,7 +14,6 @@ public class Reindeer extends Thread{
     @Override
     public void run() {
         try {
-            while (true) {
                 while (y >= 0) {
                     y -= 20;
                     Main.paintSemaphore.acquire();
@@ -27,7 +26,6 @@ public class Reindeer extends Thread{
                 System.out.println("taking");
                 Main.reindeersSemaphore.release();
                 repaint();
-            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
