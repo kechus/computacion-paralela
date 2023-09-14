@@ -22,7 +22,7 @@ public class Lane implements Runnable {
                         var th = new Thread(car);
                         th.start();
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 }
                 Main.laneSemaphore.release();
                 Thread.sleep(2000);

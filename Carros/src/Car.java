@@ -11,7 +11,7 @@ public class Car implements Runnable{
         var speed = 10;
         var rate = 200;
         try {
-            while (true){
+            while (goesRight ? pos < 700 : pos > 100){
                 if(goesRight){
                     pos += speed;
                 }else{
