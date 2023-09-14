@@ -1,4 +1,4 @@
-public class ElfsProducer extends Thread{
+public class ElfProducer extends Thread{
 
     @Override
     public void run() {

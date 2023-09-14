@@ -1,19 +1,13 @@
 import java.util.concurrent.Semaphore;
 
 public class Reindeer extends Thread{
-    Window window;
-    Semaphore semaforoRenos;
-    Semaphore semaforoInterfaz;
     int x;
     int y;
     int heigth;
-    Reindeer(Window window, Semaphore semaforoRenos, Semaphore semaforoInterfaz, int x, int y){
-        this.window = window;
-        this.semaforoRenos = semaforoRenos;
-        this.semaforoInterfaz = semaforoInterfaz;
+    Reindeer(int x, int y){
         this.x = x;
         this.y = y;
-        this.heigth = window.getHeight();
+        this.heigth = Main.window.getHeight();
     }
 
     @Override
@@ -21,14 +15,14 @@ public class Reindeer extends Thread{
         try {
             while (x >= 0) {
                 x -= 20;
-                semaforoInterfaz.acquire();
-                window.repaint();
-                semaforoInterfaz.release();
+                Main.drawSemaphore.acquire();
+                Main.window.repaint();
+                Main.drawSemaphore.release();
                 Thread.sleep(300);
             }
-            semaforoRenos.acquire();
-            window.reindeers.remove(this);
-            semaforoRenos.release();
+            Main.reindeersSemaphore.acquire();
+            Main.window.reindeers.remove(this);
+            Main.reindeersSemaphore.release();
         }catch (Exception e){
             e.printStackTrace();
         }

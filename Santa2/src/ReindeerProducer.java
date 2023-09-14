@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class ReindeersProducer extends Thread {
+public class ReindeerProducer extends Thread {
     int currentReindeer = 0;
 
     @Override
@@ -10,7 +10,7 @@ public class ReindeersProducer extends Thread {
                 Main.reindeersSemaphore.acquire();
                 var y = Main.window.getWidth() - 20 - Main.window.reindeerImg.getWidth();
                 var x = 50 + currentReindeer * (Main.window.reindeerImg.getHeight() - 50);
-                var createdReindeer = new Reindeer(Main.window, Main.reindeersSemaphore, Main.drawSemaphore, x, y);
+                var createdReindeer = new Reindeer(x, y);
                 Main.window.reindeers.add(createdReindeer);
                 currentReindeer++;
                 Main.reindeersSemaphore.release();
@@ -20,13 +20,13 @@ public class ReindeersProducer extends Thread {
                 Main.drawSemaphore.release();
                 Thread.sleep(2500);
                 if (currentReindeer == 9) {
-                    String estatus;
+                    SantaStatus estatus;
                     do {
                         Main.santaSemaphore.acquire();
                         estatus = Main.santa.status;
                         Main.santaSemaphore.release();
                         Thread.sleep(1000);
-                    } while (Objects.equals(estatus, "Renos"));
+                    } while (Objects.equals(estatus, SantaStatus.REINDEERS));
                     currentReindeer = 0;
                 }
             } catch (Exception e) {

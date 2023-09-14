@@ -1,8 +1,14 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
+enum SantaStatus {
+    SLEEPING,
+    REINDEERS,
+    ELFS,
+}
+
 public class Santa extends Thread {
-    String status = "Durmiendo";
+    SantaStatus status = SantaStatus.SLEEPING;
     ElfGrouping elfGrouping;
 
     @Override
@@ -10,12 +16,12 @@ public class Santa extends Thread {
         while (true) {
             try {
                 boolean renosStart = false;
-               Main.santaSemaphore.acquire();
-                if (Objects.equals(status, "Durmiendo")) {
+                Main.santaSemaphore.acquire();
+                if (Objects.equals(status, SantaStatus.SLEEPING)) {
                     boolean changed = false;
                     Main.reindeersSemaphore.acquire();
-                    if(Main.window.reindeers.size() == 9){
-                        status = "Renos";
+                    if (Main.window.reindeers.size() == 9) {
+                        status = SantaStatus.REINDEERS;
                         changed = true;
                         renosStart = true;
                     }
@@ -23,15 +29,15 @@ public class Santa extends Thread {
                     Main.elfsGroupingSemaphore.acquire();
                     if (!Main.window.groupedElfs.isEmpty() && !changed) {
                         elfGrouping = Main.window.groupedElfs.get(0);
-                        status = "Ayudando";
+                        status = SantaStatus.ELFS;
                     }
                     Main.elfsGroupingSemaphore.release();
                 }
-                if (Objects.equals(status, "Ayudando")) {
+                if (Objects.equals(status, SantaStatus.ELFS)) {
                     boolean changed = false;
                     Main.reindeersSemaphore.acquire();
-                    if(Main.window.reindeers.size() == 9){
-                        status = "Renos";
+                    if (Main.window.reindeers.size() == 9) {
+                        status = SantaStatus.REINDEERS;
                         changed = true;
                         renosStart = true;
                     }
@@ -42,24 +48,24 @@ public class Santa extends Thread {
                     if (elfGrouping.stage == 3 && !changed) {
                         Main.elfsGroupingSemaphore.acquire();
                         Main.window.groupedElfs.remove(elfGrouping);
-                        status = (!Main.window.groupedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
-                        elfGrouping = (status.equals("Ayudando")) ? Main.window.groupedElfs.get(0) : null;
+                        status = (!Main.window.groupedElfs.isEmpty()) ? SantaStatus.ELFS : SantaStatus.SLEEPING;
+                        elfGrouping = (status.equals(SantaStatus.ELFS)) ? Main.window.groupedElfs.get(0) : null;
                         Main.elfsGroupingSemaphore.release();
                     }
                 }
-                if(Objects.equals(status, "Renos")){
+                if (Objects.equals(status, SantaStatus.REINDEERS)) {
                     Main.reindeersSemaphore.acquire();
                     ArrayList<Reindeer> reindeers = Main.window.reindeers;
                     Main.reindeersSemaphore.release();
-                    if(renosStart){
-                        for(var r : reindeers){
+                    if (renosStart) {
+                        for (var r : reindeers) {
                             r.start();
                         }
                     }
-                    if(reindeers.isEmpty()){
+                    if (reindeers.isEmpty()) {
                         Main.elfsGroupingSemaphore.acquire();
-                        status = (!Main.window.groupedElfs.isEmpty()) ? "Ayudando" : "Durmiendo";
-                        if(elfGrouping == null) elfGrouping = Main.window.groupedElfs.get(0);
+                        status = (!Main.window.groupedElfs.isEmpty()) ? SantaStatus.ELFS : SantaStatus.SLEEPING;
+                        if (elfGrouping == null) elfGrouping = Main.window.groupedElfs.get(0);
                         Main.elfsGroupingSemaphore.release();
                     }
                 }

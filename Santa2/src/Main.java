@@ -10,12 +10,12 @@ public class Main {
     public static Santa santa = new Santa();
 
     public static void main(String[] args) {
-        ElfsProducer elfsProducer = new ElfsProducer();
-        ReindeersProducer reindeersProducer = new ReindeersProducer();
+        ElfProducer elfProducer = new ElfProducer();
+        ReindeerProducer reindeerProducer = new ReindeerProducer();
 
         window.santa = santa;
-        window.elfsProducer = elfsProducer;
-        window.reindeersProducer = reindeersProducer;
+        window.elfProducer = elfProducer;
+        window.reindeerProducer = reindeerProducer;
         window.init();
     }
 }

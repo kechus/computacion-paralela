@@ -10,13 +10,12 @@ public class Window extends JFrame {
     BufferedImage santaImg;
     BufferedImage elfImg;
     BufferedImage reindeerImg;
-    BufferedImage groupdedElfsImg;
+    BufferedImage groupedElfsImg;
     ArrayList<Elf> freeElfs;
     ArrayList<ElfGrouping> groupedElfs;
-    ElfsProducer elfsProducer;
-    ReindeersProducer reindeersProducer;
+    ElfProducer elfProducer;
+    ReindeerProducer reindeerProducer;
     Santa santa;
-
     ArrayList<Reindeer> reindeers;
 
     Window() {
@@ -26,7 +25,7 @@ public class Window extends JFrame {
             this.santaImg = ImageIO.read(new File(baseUrl + "santa.png"));
             this.elfImg = ImageIO.read(new File(baseUrl + "elf.png"));
             this.reindeerImg = ImageIO.read(new File(baseUrl + "reindeer.png"));
-            this.groupdedElfsImg = ImageIO.read(new File(baseUrl+"agrupacionElfos.png"));
+            this.groupedElfsImg = ImageIO.read(new File(baseUrl+"agrupacionElfos.png"));
             this.groupedElfs = new ArrayList<>();
             this.freeElfs = new ArrayList<>();
             setSize(800, 800);
@@ -44,25 +43,33 @@ public class Window extends JFrame {
         int elfsY = 50;
         for (int i = 0; i < freeElfs.size(); i++) {
             g.drawImage(elfImg, elfsX, elfsY, this);
-            elfsY += elfImg.getHeight() + 10;
-            if (elfsY >= this.getHeight()) {
-                elfsX += elfImg.getWidth() + 10;
-                elfsY = 50;
+            elfsX += elfImg.getHeight() + 10;
+            if (elfsX >= this.getHeight()) {
+                elfsY += elfImg.getWidth() + 10;
+                elfsX = 50;
             }
         }
 
         for (int i = 0; i < groupedElfs.size(); i++) {
-            g.drawImage(groupdedElfsImg, elfImg.getWidth() + 40, 50 + i * (groupdedElfsImg.getHeight() + 10), this);
-            if (Objects.equals(santa.status, "Ayudando") && santa.elfGrouping == groupedElfs.get(i)) {
-                g.drawImage(santaImg, elfImg.getWidth() + groupdedElfsImg.getWidth() + 60, 50 + i * (groupdedElfsImg.getHeight() + 10), this);
+            var x =50 + i * (groupedElfsImg.getHeight() + 10);
+            var y = elfImg.getWidth() + 40;
+            g.drawImage(groupedElfsImg, x,y , this);
+            if (Objects.equals(santa.status, SantaStatus.ELFS) && santa.elfGrouping == groupedElfs.get(i)) {
+                var santaX = 50 + i * (groupedElfsImg.getHeight() + 10);
+                var santaY  = elfImg.getWidth() + groupedElfsImg.getWidth() + 60;
+                g.drawImage(santaImg, santaX, santaY, this);
             }
         }
 
-        if (Objects.equals(santa.status, "Durmiendo")) {
-            g.drawImage(santaImg, (getWidth() - santaImg.getWidth()) / 2, getHeight() - santaImg.getHeight() - 50, this);
+        if (Objects.equals(santa.status, SantaStatus.SLEEPING)) {
+            var x = getHeight() - santaImg.getHeight() - 50;
+            var y = (getWidth() - santaImg.getWidth()) / 2;
+            g.drawImage(santaImg, x, y, this);
         }
-        if (Objects.equals(santa.status, "Renos")) {
-            g.drawImage(santaImg, getWidth() - 40 - reindeerImg.getWidth() - santaImg.getWidth(), 50, this);
+        if (Objects.equals(santa.status, SantaStatus.REINDEERS)) {
+            var x = 50;
+            var y = getWidth() - 40 - reindeerImg.getWidth() - santaImg.getWidth();
+            g.drawImage(santaImg, x, y, this);
         }
 
         for (var reindeer : reindeers) {
@@ -72,7 +79,7 @@ public class Window extends JFrame {
 
     void init() {
         santa.start();
-        elfsProducer.start();
-        reindeersProducer.start();
+        elfProducer.start();
+        reindeerProducer.start();
     }
 }
