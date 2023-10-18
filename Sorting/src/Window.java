@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Window extends JFrame {
     private JLabel label1;
@@ -18,14 +20,14 @@ public class Window extends JFrame {
     Random random = new Random();
 
     public Window() {
-        super("Swing Window Example");
+        super("Programa");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 250);
+        setSize(400, 250);
         setLayout(new BorderLayout());
 
-        label1 = new JLabel("Array Data: ");
-        label2 = new JLabel("abd");
-        label3 = new JLabel("def");
+        label1 = new JLabel("Datos: ");
+        label2 = new JLabel("");
+        label3 = new JLabel("");
 //        label2.setHorizontalTextPosition(SwingConstants.LEADING);
 
 //        JScrollPane scrollPane = new JScrollPane(label2);
@@ -41,10 +43,12 @@ public class Window extends JFrame {
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         JTextField textField = new JTextField(15);
-        JButton inputButton = new JButton("Input Button");
+        JButton inputButton = new JButton("Aceptar longitud");
+        JButton resetButton = new JButton("Reiniciar");
 
         topPanel.add(textField);
         topPanel.add(inputButton);
+        topPanel.add(resetButton);
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new GridLayout(2, 3));
@@ -68,22 +72,29 @@ public class Window extends JFrame {
         add(topPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        resetButton.addActionListener(e -> {
+            inputButton.setEnabled(true);
+            textField.setEnabled(true);
+            label2.setText("");
+            label3.setText("");
+//            arr = new int[0];
+        });
         inputButton.addActionListener(e -> {
             inputButton.setEnabled(false);
             textField.setEnabled(false);
             var len = Integer.parseInt(textField.getText());
             arr = new int[len];
-            for(int i = 0; i < len; i ++){
-                arr[i] = random.nextInt(1,100);
+            for (int i = 0; i < len; i++) {
+                arr[i] = random.nextInt(1, 100);
             }
-           label1.setText("Largo "+len);
+            label1.setText("Longitud: " + len);
             String[] list = Arrays.stream(arr)
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
-            label2.setText(String.join(" ",list));
+            label2.setText(String.join(" ", list));
         });
 
-        button1.addActionListener(e->{
+        button1.addActionListener(e -> {
             startTime = System.currentTimeMillis();
             var sort = new MergeSort();
             var merged = sort.mergeSort(copyArray(arr), 0, arr.length - 1);
@@ -92,12 +103,11 @@ public class Window extends JFrame {
             String[] list = Arrays.stream(merged)
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
-            label3.setText(String.join(" ",list));
+            label3.setText(String.join(" ", list));
         });
 
         button2.addActionListener(e -> {
             startTime = System.currentTimeMillis();
-
             var fj = new FJ();
             var merged = fj.mergeSort(copyArray(arr));
             var time = getTime();
@@ -105,8 +115,21 @@ public class Window extends JFrame {
             String[] list = Arrays.stream(merged)
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
-            label3.setText(String.join(" ",list));
+            label3.setText(String.join(" ", list));
             labelBelowButton2.setText(time);
+        });
+
+        button3.addActionListener(e -> {
+            startTime = System.currentTimeMillis();
+
+            var merged = MergeSortWithExecutorService.mergeSort(copyArray(arr));
+
+            var time = getTime();
+            String[] list = Arrays.stream(merged)
+                    .mapToObj(String::valueOf)
+                    .toArray(String[]::new);
+            label3.setText(String.join(" ", list));
+            labelBelowButton3.setText(time);
         });
 
         setLocationRelativeTo(null);
@@ -119,7 +142,7 @@ public class Window extends JFrame {
         return copy;
     }
 
-    public static String getTime(){
+    public static String getTime() {
         var endTime = System.currentTimeMillis();
         NumberFormat formatter = new DecimalFormat("#0.00000");
         return formatter.format((endTime - startTime) / 1000d);
