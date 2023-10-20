@@ -6,8 +6,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Window extends JFrame {
     private JLabel label1;
@@ -108,9 +107,18 @@ public class Window extends JFrame {
 
         button2.addActionListener(e -> {
             startTime = System.currentTimeMillis();
-            var fj = new FJ();
-            var merged = fj.mergeSort(copyArray(arr));
-            var time = getTime();
+
+            var task = new FJ.MergeTask(copyArray(arr), 0, arr.length - 1);
+            var pool = new ForkJoinPool();
+            Future<int[]> result = pool.submit(task);
+            int[] merged;
+            try {
+                merged = result.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new RuntimeException(ex);
+            }
+
+           var time = getTime();
 
             String[] list = Arrays.stream(merged)
                     .mapToObj(String::valueOf)

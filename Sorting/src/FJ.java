@@ -2,7 +2,7 @@ import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.ForkJoinPool;
 
 public class FJ {
-    private static class MergeTask extends RecursiveTask<int[]> {
+    public static class MergeTask extends RecursiveTask<int[]> {
         private final int[] array;
         private final int lowerBound;
         private final int upperBound;
@@ -77,10 +77,5 @@ public class FJ {
         }
 
         return sorted;
-    }
-
-    public int[] mergeSort(int[] numbers) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        return forkJoinPool.invoke(new MergeTask(numbers, 0, numbers.length - 1));
     }
 }
