@@ -84,7 +84,7 @@ public class Window extends JFrame {
             var len = Integer.parseInt(textField.getText());
             arr = new int[len];
             for (int i = 0; i < len; i++) {
-                arr[i] = random.nextInt(1, 100);
+                arr[i] = random.nextInt(1, Integer.MAX_VALUE);
             }
             label1.setText("Longitud: " + len);
             String[] list = Arrays.stream(arr)
@@ -98,7 +98,7 @@ public class Window extends JFrame {
             var sort = new MergeSort();
             var merged = sort.mergeSort(copyArray(arr), 0, arr.length - 1);
             var time = getTime();
-            labelBelowButton1.setText(time);
+            labelBelowButton1.setText(time+ " MS");
             String[] list = Arrays.stream(merged)
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
@@ -124,20 +124,29 @@ public class Window extends JFrame {
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
             label3.setText(String.join(" ", list));
-            labelBelowButton2.setText(time);
+            labelBelowButton2.setText(time+" MS");
         });
 
         button3.addActionListener(e -> {
             startTime = System.currentTimeMillis();
 
-            var merged = MergeSortWithExecutorService.mergeSort(copyArray(arr));
+            int[] merged;
+            String time;
+            try {
+                ExecutorService executor = Executors.newCachedThreadPool();
+                Future<int[]> future = executor.submit(new ExecutorMerge(copyArray(arr), executor, 0));
+                merged = future.get();
+                time = getTime();
+                executor.shutdown();
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new RuntimeException(ex);
+            }
 
-            var time = getTime();
             String[] list = Arrays.stream(merged)
                     .mapToObj(String::valueOf)
                     .toArray(String[]::new);
             label3.setText(String.join(" ", list));
-            labelBelowButton3.setText(time);
+            labelBelowButton3.setText(time+" MS");
         });
 
         setLocationRelativeTo(null);
