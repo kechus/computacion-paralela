@@ -32,16 +32,15 @@ public class PrimeNumbers {
 
         long startTime = System.nanoTime();
 
-            for (int i = 2; i <= n; i++) {
-                if (isPrime(i)) {
-                    try (var fileWriter = new FileWriter(fileName,true)) {
+        for (int i = 2; i <= n; i++) {
+            if (isPrime(i)) {
+                try (var fileWriter = new FileWriter(fileName, true)) {
                     fileWriter.write(i + " ");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-
+        }
 
 
         long endTime = System.nanoTime();
