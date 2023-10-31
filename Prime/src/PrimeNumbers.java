@@ -1,5 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class PrimeNumbers {
@@ -25,10 +27,13 @@ public class PrimeNumbers {
         return true;
     }
 
-    public static void main(String[] args) {
-        int n = 50_000;
+    public static long main(int n) {
         String fileName = "prime_numbers_sec.txt";
-        System.out.println("Prime numbers from 1 to " + n + ":");
+        try {
+            Files.delete(Path.of(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         long startTime = System.nanoTime();
 
@@ -45,7 +50,7 @@ public class PrimeNumbers {
 
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
-        System.out.println("Time taken by seq: " + elapsedTime / 1e6 + " milliseconds");
+        return elapsedTime;
     }
 }
 

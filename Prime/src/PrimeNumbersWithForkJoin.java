@@ -1,33 +1,13 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
 public class PrimeNumbersWithForkJoin {
     static final int THRESHOLD = 100;
     static ForkJoinPool pool = new ForkJoinPool();
-
-    public static boolean isPrime(int number) {
-        if (number <= 1) {
-            return false;
-        }
-
-        if (number <= 3) {
-            return true;
-        }
-
-        if (number % 2 == 0 || number % 3 == 0) {
-            return false;
-        }
-
-        for (int i = 5; i * i <= number; i += 6) {
-            if (number % i == 0 || number % (i + 2) == 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public static class PrimeCalculator extends RecursiveAction {
         int start, end;
@@ -43,7 +23,7 @@ public class PrimeNumbersWithForkJoin {
         protected void compute() {
             if (end - start < THRESHOLD) {
                 for (int i = start; i <= end; i++) {
-                    if (isPrime(i)) {
+                    if (PrimeNumbers.isPrime(i)) {
                         try {
                             fileWriter.write(i + " ");
                         } catch (IOException e) {
@@ -60,21 +40,24 @@ public class PrimeNumbersWithForkJoin {
         }
     }
 
-    public static void main(String[] args) {
-        int n = 50_000;
+    public static long main(int n) {
         String fileName = "prime_numbers_fork.txt";
+        try {
+            Files.delete(Path.of(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         long startTime = System.nanoTime();
 
         try (FileWriter fileWriter = new FileWriter(fileName)) {
-            System.out.println("Prime numbers from 1 to " + n + " written to " + fileName + ":");
-            pool.invoke(new PrimeCalculator(2, n, fileWriter));
+            pool.invoke(new PrimeCalculator(1, n, fileWriter));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
-        System.out.println("Time taken by seq: " + elapsedTime / 1e6 + " milliseconds");
+        return elapsedTime;
     }
 }

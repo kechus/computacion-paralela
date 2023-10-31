@@ -1,5 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Callable;
@@ -9,28 +11,6 @@ import java.util.ArrayList;
 
 public class PrimeNumbersWithExecutorService {
     static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors()-1;
-
-    public static boolean isPrime(int number) {
-        if (number <= 1) {
-            return false;
-        }
-
-        if (number <= 3) {
-            return true;
-        }
-
-        if (number % 2 == 0 || number % 3 == 0) {
-            return false;
-        }
-
-        for (int i = 5; i * i <= number; i += 6) {
-            if (number % i == 0 || number % (i + 2) == 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public static class PrimeCalculator implements Callable<List<Integer>> {
         int start, end;
@@ -45,7 +25,7 @@ public class PrimeNumbersWithExecutorService {
             List<Integer> primeNumbers = new ArrayList<>();
             try (FileWriter fileWriter = new FileWriter("prime_numbers_exec.txt", true)) {
                 for (int i = start; i <= end; i++) {
-                    if (isPrime(i)) {
+                    if (PrimeNumbers.isPrime(i)) {
                         primeNumbers.add(i);
                         fileWriter.write(i + " ");
                     }
@@ -57,8 +37,7 @@ public class PrimeNumbersWithExecutorService {
         }
     }
 
-    public static void main(String[] args) {
-        int n = 50_000;
+    public static long main(int n) {
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
         long startTime = System.nanoTime();
@@ -76,11 +55,10 @@ public class PrimeNumbersWithExecutorService {
             end = start + segmentSize - 1;
         }
 
-        List<Integer> primeNumbers = new ArrayList<>();
 
         for (Future<List<Integer>> future : futures) {
             try {
-                primeNumbers.addAll(future.get());
+                future.get();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -88,8 +66,7 @@ public class PrimeNumbersWithExecutorService {
 
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
-        System.out.println("Time taken by ExecutorService: " + elapsedTime / 1e6 + " milliseconds");
-
         executorService.shutdown();
+        return  elapsedTime;
     }
 }
