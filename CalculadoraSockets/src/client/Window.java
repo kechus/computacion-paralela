@@ -18,19 +18,29 @@ public class Window extends JFrame implements ActionListener {
 
     protected DataOutputStream dos;
     protected DataInputStream dis;
+    private JPanel buttonPanel;
 
     public Window(DataOutputStream dos, DataInputStream dis) {
         this.dos = dos;
         this.dis = dis;
 
         setTitle("Calculadora");
-        setSize(500, 500);
+        setSize(800, 800);
+
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 4));
+
+        label = new JLabel(value);
+        label.setHorizontalAlignment(JTextField.RIGHT);
+        label.setPreferredSize(new Dimension(label.getPreferredSize().width, 40));
 
         createButtons();
-        label = new JLabel(value);
-        add(label);
 
-        setLayout(new GridLayout(3, 3));
+        add(label,BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
+
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
 
     }
@@ -38,7 +48,7 @@ public class Window extends JFrame implements ActionListener {
     private void createButtons() {
         for (int i = 0; i < 10; i++) {
             var btn = new JButton(String.valueOf(i));
-            add(btn);
+            buttonPanel.add(btn);
             btn.addActionListener(e -> appendToValue(btn.getText()));
         }
 
@@ -63,7 +73,7 @@ public class Window extends JFrame implements ActionListener {
         botonesDeOperacion.add(c);
 
         for (var btn : botonesDeOperacion) {
-            add(btn);
+            buttonPanel.add(btn);
             btn.addActionListener(this);
         }
     }
