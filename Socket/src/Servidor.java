@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Yeah {
+public class Servidor {
     // Elegir un Puerto del rango 1-1024:
     public static final int PUERTO = 8080;
 
