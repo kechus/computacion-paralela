@@ -1,3 +1,5 @@
+import client.Finder;
+
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,16 +1,23 @@
 package client;
 
+import types.ClientActions;
+import types.IServerMethods;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.rmi.RemoteException;
 
 public class Window extends JFrame {
-    private JLabel label1;
-    private JLabel label3;
-
+    private final JLabel label1;
+    private final JLabel label3;
+    private final JLabel labelBelowButton1;
+    private final JLabel labelBelowButton2;
+    private final JLabel labelBelowButton3;
     int len;
-    public Window(DataOutputStream dos, DataInputStream dis) {
+
+    public Window(IServerMethods server) {
         super("Programa");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 250);
@@ -42,9 +49,9 @@ public class Window extends JFrame {
         JButton button2 = new JButton("ForkJoin");
         JButton button3 = new JButton("Executor Service");
 
-        JLabel labelBelowButton1 = new JLabel("");
-        JLabel labelBelowButton2 = new JLabel("");
-        JLabel labelBelowButton3 = new JLabel("");
+        labelBelowButton1 = new JLabel("");
+        labelBelowButton2 = new JLabel("");
+        labelBelowButton3 = new JLabel("");
 
         bottomPanel.add(button1);
         bottomPanel.add(button2);
@@ -70,24 +77,45 @@ public class Window extends JFrame {
         });
 
         button1.addActionListener(e -> {
-//            var elapsedTime = PrimeNumbers.main(len);
-//            labelBelowButton1.setText( elapsedTime / 1e6 + " ms");
+            try {
+                server.makeAction(ClienteThread.id, ClientActions.SEQUENTIAL);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         button2.addActionListener(e -> {
-//            var elapsedTime = PrimeNumbersWithForkJoin.main(len);
-//            labelBelowButton2.setText( elapsedTime / 1e6 + " ms");
+            try {
+                server.makeAction(ClienteThread.id,ClientActions.FORK_JOIN);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         button3.addActionListener(e -> {
-//            var elapsedTime = PrimeNumbersWithExecutorService.main(len);
-//            labelBelowButton3.setText( elapsedTime / 1e6 + " ms");
+            try {
+                server.makeAction(ClienteThread.id,ClientActions.EXECUTOR_SERVICE);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         Button openSearchButton = new Button("Encuentra números");
-//        openSearchButton.addActionListener(e -> new Finder("Encuentra números"));
+//        openSearchButton.addActionListener(e -> new client.Finder("Encuentra números"));
         add(openSearchButton, BorderLayout.NORTH);
 
         setLocationRelativeTo(null);
+    }
+
+    public void sequential(int elapsedTime){
+        labelBelowButton1.setText( elapsedTime / 1e6 + " ms");
+    }
+
+    public void forkJoin(int elapsedTime){
+        labelBelowButton2.setText( elapsedTime / 1e6 + " ms");
+    }
+
+    public void executorService(int elapsedTime){
+        labelBelowButton3.setText( elapsedTime / 1e6 + " ms");
     }
 }

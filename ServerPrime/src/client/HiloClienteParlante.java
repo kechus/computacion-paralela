@@ -20,7 +20,7 @@ public class HiloClienteParlante extends Thread {
             sk = new Socket("localhost",42069);
             dos = new DataOutputStream(sk.getOutputStream());
             dis = new DataInputStream(sk.getInputStream());
-            new Window(dos,dis).setVisible(true);
+//            new Window(dos,dis).setVisible(true);
             while (true){}
         } catch (IOException e) {
             Logger.getLogger(HiloClienteParlante.class.getName()).log(Level.SEVERE,null,e);
