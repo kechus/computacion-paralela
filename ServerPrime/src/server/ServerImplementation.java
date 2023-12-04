@@ -50,10 +50,12 @@ class ServerImplementation implements IServerMethods {
                     otherRes = PrimeNumbers.main(otherLength);
                     break;
                 case FORK_JOIN:
-//                    actionHandler.handleForkJoin(n);
+                    ownRes = PrimeNumbersWithForkJoin.main(ownLength);
+                    otherRes = PrimeNumbersWithForkJoin.main(otherLength);
                     break;
                 case EXECUTOR_SERVICE:
-//                    actionHandler.handleExecutorService(n);
+                    ownRes = PrimeNumbersWithExecutorService.main(ownLength);
+                    otherRes = PrimeNumbersWithExecutorService.main(otherLength);
                     break;
             }
 

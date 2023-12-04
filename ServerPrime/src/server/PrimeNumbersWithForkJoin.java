@@ -4,12 +4,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
 public class PrimeNumbersWithForkJoin {
     static final int THRESHOLD = 100;
     static ForkJoinPool pool = new ForkJoinPool();
+
+    public static ArrayList<Integer> numbers = new ArrayList<>();
 
     public static class PrimeCalculator extends RecursiveAction {
         int start, end;
@@ -26,6 +29,7 @@ public class PrimeNumbersWithForkJoin {
             if (end - start < THRESHOLD) {
                 for (int i = start; i <= end; i++) {
                     if (PrimeNumbers.isPrime(i)) {
+                        numbers.add(i);
                         try {
                             fileWriter.write(i + " ");
                         } catch (IOException e) {
@@ -42,24 +46,22 @@ public class PrimeNumbersWithForkJoin {
         }
     }
 
-    public static long main(int n) {
+    public static ArrayList<Integer> main(int n) {
         String fileName = "prime_numbers_fork.txt";
         try {
             Files.delete(Path.of(fileName));
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
-        long startTime = System.nanoTime();
 
         try (FileWriter fileWriter = new FileWriter(fileName)) {
-            pool.invoke(new PrimeCalculator(1, n, fileWriter));
+            var calculator = new PrimeCalculator(1, n, fileWriter);
+            pool.invoke(calculator);
+            return numbers;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
-        return elapsedTime;
+        return null;
     }
 }

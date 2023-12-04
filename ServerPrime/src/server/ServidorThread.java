@@ -2,13 +2,8 @@ package server;
 import types.IServerMethods;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

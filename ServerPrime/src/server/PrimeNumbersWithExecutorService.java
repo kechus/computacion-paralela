@@ -37,10 +37,8 @@ public class PrimeNumbersWithExecutorService {
         }
     }
 
-    public static long main(int n) {
+    public static ArrayList<Integer> main(int n) {
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-
-        long startTime = System.nanoTime();
         List<Future<List<Integer>>> futures = new ArrayList<>();
 
         int segmentSize = n / THREAD_POOL_SIZE;
@@ -55,18 +53,16 @@ public class PrimeNumbersWithExecutorService {
             end = start + segmentSize - 1;
         }
 
-
+        ArrayList<Integer> allPrimes = new ArrayList<>();
         for (Future<List<Integer>> future : futures) {
             try {
-                future.get();
+                var a = future.get();
+                allPrimes.addAll(a);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
-        executorService.shutdown();
-        return  elapsedTime;
+        return  allPrimes;
     }
 }

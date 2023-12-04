@@ -34,7 +34,7 @@ public class PrimeNumbers {
         try {
             Files.delete(Path.of(fileName));
         } catch (IOException e) {
-//            throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         ArrayList<Integer> numbers = new ArrayList<>();
