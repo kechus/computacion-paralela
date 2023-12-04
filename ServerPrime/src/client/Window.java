@@ -78,7 +78,7 @@ public class Window extends JFrame {
 
         button1.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id, ClientActions.SEQUENTIAL);
+                server.makeAction(ClienteThread.id, ClientActions.SEQUENTIAL, len);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -86,7 +86,7 @@ public class Window extends JFrame {
 
         button2.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id,ClientActions.FORK_JOIN);
+                server.makeAction(ClienteThread.id,ClientActions.FORK_JOIN, len);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -94,7 +94,7 @@ public class Window extends JFrame {
 
         button3.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id,ClientActions.EXECUTOR_SERVICE);
+                server.makeAction(ClienteThread.id,ClientActions.EXECUTOR_SERVICE, len);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }

@@ -11,6 +11,8 @@ public class PrimeClient extends UnicastRemoteObject implements IClientActions ,
     protected PrimeClient(IServerMethods server) throws RemoteException {
         server.register(ClienteThread.id, this);
         window = new Window(server);
+        window.setVisible(true);
+        System.out.println("Conectado");
     }
 
     @Override
