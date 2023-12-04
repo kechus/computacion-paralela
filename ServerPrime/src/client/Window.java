@@ -2,11 +2,10 @@ package client;
 
 import types.ClientActions;
 import types.IServerMethods;
+import types.PrimeResults;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.rmi.RemoteException;
 
 public class Window extends JFrame {
@@ -16,9 +15,11 @@ public class Window extends JFrame {
     private final JLabel labelBelowButton2;
     private final JLabel labelBelowButton3;
     int len;
+    int id;
 
-    public Window(IServerMethods server) {
+    public Window(IServerMethods server, int id) {
         super("Programa");
+        this.id = id;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 250);
         setLayout(new BorderLayout());
@@ -74,19 +75,33 @@ public class Window extends JFrame {
             textField.setEnabled(false);
             len = Integer.parseInt(textField.getText());
             label1.setText("Longitud: " + len);
+            try {
+                server.setLenght(id,len);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         button1.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id, ClientActions.SEQUENTIAL, len);
+                PrimeResults a;
+                do {
+                    Thread.sleep(1000);
+                    a = server.calculate(id, ClientActions.SEQUENTIAL);
+                }while (null == a);
+                System.out.println("jijija");
+                System.out.println(a.time);
+                sequential(a.time,labelBelowButton1);
             } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
         button2.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id,ClientActions.FORK_JOIN, len);
+                server.calculate(id,ClientActions.FORK_JOIN);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -94,7 +109,7 @@ public class Window extends JFrame {
 
         button3.addActionListener(e -> {
             try {
-                server.makeAction(ClienteThread.id,ClientActions.EXECUTOR_SERVICE, len);
+                server.calculate(id,ClientActions.EXECUTOR_SERVICE);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -107,15 +122,7 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public void sequential(int elapsedTime){
-        labelBelowButton1.setText( elapsedTime / 1e6 + " ms");
-    }
-
-    public void forkJoin(int elapsedTime){
-        labelBelowButton2.setText( elapsedTime / 1e6 + " ms");
-    }
-
-    public void executorService(int elapsedTime){
-        labelBelowButton3.setText( elapsedTime / 1e6 + " ms");
+    public void sequential(long elapsedTime, JLabel label){
+        label.setText( elapsedTime / 1e6 + " ms");
     }
 }

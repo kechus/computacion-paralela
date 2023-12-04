@@ -1,46 +1,65 @@
 package server;
 
-import types.IClientActions;
 import types.IServerMethods;
 import types.ClientActions;
+import types.PrimeResults;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
-class ServerImplementation extends UnicastRemoteObject implements IServerMethods {
-    static final HashMap<Integer,IClientActions> clientStates = new HashMap<>();
+class ServerImplementation implements IServerMethods {
+    int id = -1;
+    int [] users = new int[2];
     public ServerImplementation() throws RemoteException {
         super();
+        Arrays.fill(users, -1);
     }
 
     @Override
-    public void register(int id,IClientActions client) throws RemoteException {
+    public int register() throws RemoteException {
         System.out.println("cliente conectado");
-        clientStates.put(id,client);
+        id++;
+       return id;
     }
 
     @Override
-    public void makeAction(int id, ClientActions userAction, int n) throws RemoteException {
-        try {
-            var client = clientStates.get(id);
-            var actionHandler = new ActionHandler(client);
+    public void setLenght(int id, int n) throws RemoteException {
+       users[id] = n;
+    }
+
+    @Override
+    public PrimeResults calculate(int id, ClientActions userAction) throws RemoteException {
+        System.out.println(userAction);
+        for(var user : users){
+           if(-1 == user){
+               return null;
+           }
+        }
+        var ownLength = users[id];
+        var otherLength = users[id == 0 ? 1 : 0];
+
+        ArrayList<Integer> ownRes = null;
+        ArrayList<Integer> otherRes = null;
+        long startTime = System.nanoTime();
             switch (userAction) {
                 case SEQUENTIAL:
-                    actionHandler.handleSequential(n);
-                    break;
-                case FIND:
+                    ownRes = PrimeNumbers.main(ownLength);
+                    otherRes = PrimeNumbers.main(otherLength);
                     break;
                 case FORK_JOIN:
-                    actionHandler.handleForkJoin(n);
+//                    actionHandler.handleForkJoin(n);
                     break;
                 case EXECUTOR_SERVICE:
-                    actionHandler.handleExecutorService(n);
+//                    actionHandler.handleExecutorService(n);
                     break;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+
+        return new PrimeResults(ownRes,otherRes,elapsedTime);
     }
 }

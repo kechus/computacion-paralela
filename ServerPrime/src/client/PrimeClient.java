@@ -9,15 +9,15 @@ import java.rmi.server.UnicastRemoteObject;
 public class PrimeClient extends UnicastRemoteObject implements IClientActions ,Runnable{
     private final Window window;
     protected PrimeClient(IServerMethods server) throws RemoteException {
-        server.register(ClienteThread.id, this);
-        window = new Window(server);
+        var id = server.register();
+        System.out.println(id);
+        window = new Window(server,id);
         window.setVisible(true);
         System.out.println("Conectado");
     }
 
     @Override
     public void sequential(int n) throws RemoteException {
-        window.sequential(n);
     }
 
     @Override

@@ -1,3 +1,5 @@
+package server;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +29,7 @@ public class PrimeNumbers {
         return true;
     }
 
-    public static long main(int n) {
+    public static ArrayList<Integer> main(int n) {
         String fileName = "prime_numbers_sec.txt";
         try {
             Files.delete(Path.of(fileName));
@@ -35,10 +37,10 @@ public class PrimeNumbers {
 //            throw new RuntimeException(e);
         }
 
-        long startTime = System.nanoTime();
-
+        ArrayList<Integer> numbers = new ArrayList<>();
         for (int i = 2; i <= n; i++) {
             if (isPrime(i)) {
+                numbers.add(i);
                 try (var fileWriter = new FileWriter(fileName, true)) {
                     fileWriter.write(i + " ");
                 } catch (IOException e) {
@@ -46,11 +48,7 @@ public class PrimeNumbers {
                 }
             }
         }
-
-
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
-        return elapsedTime;
+        return numbers;
     }
 }
 
